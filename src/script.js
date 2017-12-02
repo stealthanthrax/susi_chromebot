@@ -205,9 +205,20 @@ function composeReplyTable(response,columns,data) {
     return response;
 }
 
+function createNewButton(name){
+var likeB = document.createElement('i'); 
+likeB.setAttribute("class", "material-icons");
+likeB.setAttribute("id", name);
+likeB.innerHTML = name;
+return likeB; 
+}
+
 function composeSusiMessage(response) {
     var newP = document.createElement("p");
+    var iDiv = document.createElement("div");
     var newDiv =  messages.childNodes[messages.childElementCount];
+    var thumbUp = createNewButton("thumb-up");
+    var thumbDown = createNewButton("thumb-down");
     newDiv.setAttribute("class", "susinewmessage");
     if(dark === true)
     {
@@ -255,6 +266,7 @@ function composeSusiMessage(response) {
     newDiv.appendChild(document.createElement("br"));
     newDiv.appendChild(currtime);
     messages.appendChild(newDiv);
+    newDiv.appendChild(thumbDown);
     var storageObj = {
         senderClass: "",
         content: ""
