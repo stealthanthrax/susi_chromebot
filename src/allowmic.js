@@ -6,8 +6,36 @@ var pink = document.getElementById("pink");
 var green = document.getElementById("green") ; 
 var brown = document.getElementById("brown") ;
 var submit = document.getElementById("submit");
+var male = document.getElementById("male");
+var female = document.getElementById("female");
+var genderSave = document.getElementById("genderSave");
+var gender;
 var theme;
 var theValue;
+
+genderSave.addEventListener("click" , () => {
+   if((male.checked === true)&&(female.checked === false))
+   {
+       gender=8; //male voice
+   }
+    else if((female.checked === true)&&(male.checked === false))
+     {
+        gender=29; //female voice
+     }
+    else if ((female.checked === true) && (male.checked === true))
+        {
+            alert("Please select out one only one option");
+        }
+    else {
+        alert("Please choose from one of the options");
+    }
+    
+    
+    localStorage.setItem("gender",gender);
+    console.log(gender+ "is stored");
+});
+
+
 black.addEventListener("click" , () => {
     theme="black";
     console.log(theme);

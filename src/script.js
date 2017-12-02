@@ -24,7 +24,7 @@ var box = document.getElementById("box");
 var headerbox = document.getElementById("headerbox");
 var theme = localStorage.getItem("theme");
 var but = document.getElementById("but");
-
+var gender = localStorage.getItem("gender");
 save.addEventListener("click",()=>{
     box.style.backgroundImage = "url("+backUrl+")";
     box.style.backgroundRepeat = "no-repeat";
@@ -129,6 +129,8 @@ chrome.storage.sync.get("message",(items) => {
 function speakOutput(msg,speak=false){
     if(speak){
         var voiceMsg = new SpeechSynthesisUtterance(msg);
+        var voices = window.speechSynthesis.getVoices();
+        voiceMsg.voice = voices[gender];
         window.speechSynthesis.speak(voiceMsg);
     }
 }
