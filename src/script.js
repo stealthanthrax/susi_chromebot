@@ -29,7 +29,6 @@ var backUrl = localStorage.getItem("theValue");
 var box = document.getElementById("box");
 
 window.onload = function () {
-
     if(backUrl) {
         box.style.backgroundImage = "url(" + backUrl + ")";
         box.style.backgroundRepeat = "no-repeat";
@@ -230,6 +229,7 @@ function composeSusiMessage(response) {
     var t = getCurrentTime();
     var currtime = document.createElement("p");
     currtime.setAttribute("class", "time");
+    currtime.setAttribute("id", "time");
     var time = document.createTextNode(t);
     currtime.append(time);
     var susiTextNode;
@@ -278,7 +278,12 @@ function composeSusiMessage(response) {
     chrome.storage.sync.get("message", (items) => {
         if (items.message) {
             storageArr = items.message;
+            var jj = storageArr.map(x => $.parseHTML(x.content) );
+            var cc = jj.map((x,i) => "message =" + x[0].innerHTML  + ", time= " + x[2].innerHTML + ((i%2 ==0)?"message by user":" message by susi") );
             console.log("this was true");
+            exportArr.push({
+                oldmessages: cc
+            });
         }
         storageArr.push(storageObj);
         chrome.storage.sync.set({
@@ -356,6 +361,7 @@ function composeMyMessage(text) {
     var t = getCurrentTime();
     var currtime = document.createElement("p");
     currtime.setAttribute("class", "time");
+    currtime.setAttribute("id", "time" );
     var time = document.createTextNode(t);
     currtime.append(time);
     newDiv.appendChild(document.createElement("br"));
@@ -486,7 +492,8 @@ settings.addEventListener("click", function () {
 });
 
 exportData.addEventListener("click",function(){
-    download("susiExport.json",JSON.stringify(exportArr));
+    console.log(exportArr);
+    // download("susiExport.json",JSON.stringify(exportArr));
 });
 
 textarea.onkeyup = function (e) {
