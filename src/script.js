@@ -27,8 +27,33 @@ var msgTheme = localStorage.getItem("msgTheme");
 var but = document.getElementById("but");
 var backUrl = localStorage.getItem("theValue");
 var box = document.getElementById("box");
+var accessToken = localStorage.getItem("jj");
+var data;
+var newP;
+var newDiv;
+var foo = document.getElementById("foo");
+var message = [];
 
 window.onload = function () {
+        console.log(accessToken);
+
+    var loginEP = "https://api.susi.ai/susi/memory.json?access_token="+accessToken;
+    $.ajax({
+        url: loginEP,
+		dataType: "jsonp",
+		jsonpCallback: "p",
+		jsonp: "callback",
+		crossDomain: true,
+		success:function(response){
+            data = response;
+            console.log(loginEP); 
+            console.log(data);
+            sortData(data);
+        },
+		error: function (response) {
+            console.log(loginEP);
+        }
+	});
 
     if(backUrl) {
         box.style.backgroundImage = "url(" + backUrl + ")";
@@ -59,6 +84,22 @@ window.onload = function () {
     });
 };
 
+function sortData(data) {
+    var number = Object.keys(data.cognitions);
+    console.log(number);
+    console.log(data.cognitions[0].query);
+
+    for(var i=0; i<=number.length; i=i+2){
+        message[i] = { "content":"<p>"+data.cognitions[i].query+`</p><br><p class="time">`+ data.cognitions[i].query_date.slice(14,19)+"</p>",
+        "senderClass":"mynewmessage" };
+        message[i+1] = { "content":"<p>"+data.cognitions[i].answers[0].actions[0].expression+`</p><br><p class="time">`+ data.cognitions[i].query_date.slice(14,19)+"</p>",
+        "senderClass":"susinewmessage" };
+        console.log(message);
+        restoreMessages(message);
+    }
+    
+    console.log(message);
+}
 
 function handleScroll() {
     var scrollIcon = scrollIconElement;
@@ -154,8 +195,10 @@ function restoreMessages(storageItems) {
 
 chrome.storage.sync.get("message", (items) => {
     if (items) {
+        console.log(items.message);
         storageItems = items.message;
-        restoreMessages(storageItems);
+        // restoreMessages(data);
+        // restoreMessages(message);
 
     }
 });
@@ -237,8 +280,8 @@ function composeReplyTable(response, columns, data) {
 }
 
 function composeSusiMessage(response) {
-    var newP = document.createElement("p");
-    var newDiv = messages.childNodes[messages.childElementCount];
+     newP = document.createElement("p");
+     newDiv = messages.childNodes[messages.childElementCount];
     newDiv.setAttribute("class", "susinewmessage");
     if (dark === true) {
         newDiv.setAttribute("class", "message-susi-dark susinewmessage");
@@ -303,7 +346,7 @@ function composeSusiMessage(response) {
         }
         storageArr.push(storageObj);
         chrome.storage.sync.set({
-            "message": storageArr
+            "message": message
         }, () => {
             console.log("saved");
         });
@@ -365,8 +408,8 @@ function getResponse(query) {
 
 function composeMyMessage(text) {
     $(".empty-history").remove();
-    var newP = document.createElement("p");
-    var newDiv = document.createElement("div");
+     newP = document.createElement("p");
+     newDiv = document.createElement("div");
     newDiv.setAttribute("class", "mynewmessage");
     if (dark === true) {
         newDiv.setAttribute("class", "message-dark mynewmessage");
@@ -403,7 +446,7 @@ function composeMyMessage(text) {
         }
         storageArr.push(storageObj);
         chrome.storage.sync.set({
-            "message": storageArr
+            "message": message
         }, () => {
             console.log("saved");
         });

@@ -5,12 +5,15 @@ var logoutButton = document.getElementById("logout");
 var loginButton = document.getElementById("loginbutton");
 var noLoggedInBlock = document.getElementById("nologgedin");
 var loggedInBlock = document.getElementById("loggedin");
-var accessToken = "";
+var accessToken = localStorage.getItem("accessToken");
 var time = "";
 var BASE_URL = "https://api.susi.ai";
 var checkLogin ;
 
 window.onload = function(){
+	var jj = accessToken;
+	console.log(jj);
+	localStorage.setItem("jj",jj.value)
 	chrome.storage.sync.get("loggedUser",function(userDetails){
 		if(userDetails.loggedUser.email){
 			showLoggedInBlock(true);
@@ -23,17 +26,6 @@ window.onload = function(){
 };
 
 
-window.onload = function(){
-	chrome.storage.sync.get("loggedUser",function(userDetails){
-		if(userDetails.loggedUser.email){
-			showLoggedInBlock(true);
-		}
-		else{
-			showLoggedInBlock(false);
-		}
-	});
-
-};
 
 function showLoggedInBlock(show){
 	if(show){
@@ -74,11 +66,10 @@ loginForm.addEventListener("submit", function login(event){
 		success: function (response) {
 			if(response.accepted){
 
-				accessToken = response.accessToken;
-
+				accessToken = response.access_token;
 				checkLogin = "true";
 				localStorage.setItem("checkLogin",checkLogin);
-
+				localStorage.setItem("accessToken",accessToken);
 				chrome.storage.sync.set({
 					loggedUser:{
 						email:email,
