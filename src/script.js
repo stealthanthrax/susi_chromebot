@@ -30,6 +30,7 @@ var BASE_URL = "https://api.susi.ai";
 var queryAnswerData = JSON.parse(localStorage.getItem("messages"));
 var accessToken = "";
 
+
 function speakOutput(msg, speak = false) {
     if (speak) {
         var voiceMsg = new SpeechSynthesisUtterance(msg);
@@ -150,10 +151,14 @@ function composeReplyTable(response, columns, data) {
 
 function composeSusiMessage(response) {
     var newP = document.createElement("p");
+    var iDiv = document.createElement("div");
     var newDiv = messages.childNodes[messages.childElementCount];
+    var thumbUp = createNewButton("thumb_up");
+    var thumbDown = createNewButton("thumb_down");
     newDiv.setAttribute("class", "susinewmessage");
     if (dark === true) {
         newDiv.setAttribute("class", "message-susi-dark susinewmessage");
+        newDiv.appendChild(thumbDown);
     }
     var t = getCurrentTime();
     var currtime = document.createElement("p");
@@ -195,6 +200,8 @@ function composeSusiMessage(response) {
     });
     newDiv.appendChild(document.createElement("br"));
     newDiv.appendChild(currtime);
+    newDiv.appendChild(thumbUp);
+    newDiv.appendChild(thumbDown);
     messages.appendChild(newDiv);
     var storageObj = {
         senderClass: "",
@@ -246,6 +253,23 @@ function composeResponse(action, data) {
     return response;
 }
 
+function createNewButton(name){
+    var but = document.createElement("button");
+    but.setAttribute("id", name);
+    var likeB = document.createElement('i'); 
+    likeB.setAttribute("class", "material-icons");
+    likeB.setAttribute("id", name);
+    likeB.innerHTML = name;
+    but.appendChild(likeB);
+    but.addEventListener("click",(e)=>{
+        if(e.target.id === "thumb_up"){
+            likeB.style.color = "deepskyblue";
+        }
+        else {likeB.style.color = "red";}
+    })
+    return but; 
+    }
+    
 
 function successResponse(data) {
     data.answers[0].actions.map((action) => {
